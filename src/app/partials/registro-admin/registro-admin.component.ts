@@ -102,6 +102,9 @@ export class RegistroAdminComponent implements OnInit {
 
     //Validar la contraseña
     if(this.admin.password == this.admin.confirmar_password){
+      // LOG: Ver exactamente qué datos se están enviando
+      console.log("Datos a enviar al backend:", JSON.stringify(this.admin, null, 2));
+      
       // Ejecutamos el servicio de registro
       this.administradoresService.registrarAdmin(this.admin).subscribe(
         (response) => {
@@ -118,6 +121,7 @@ export class RegistroAdminComponent implements OnInit {
           // Manejar errores de la API
           alert("Error al registrar administrador");
           console.error("Error al registrar administrador: ", error);
+          console.error("Detalles del error:", error.error);
         }
       );
     }else{
