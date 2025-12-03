@@ -1,0 +1,227 @@
+<div class="wrapper">
+  <div class="reg-shell">
+    <!-- Título y botón regresar -->
+    <mat-card class="role-card">
+      <mat-card-header class="role-card-header">
+        <div class="actions-header-colum">
+          <mat-card-title class="title-card">
+            {{ modoEdicion ? 'Editar Materia' : 'Registro de Materia' }}
+          </mat-card-title>
+          <mat-card-subtitle class="subtitle-card">
+            {{ modoEdicion ? 'Modifica los datos de la materia seleccionada' : 'Completa el formulario para registrar una nueva materia' }}
+          </mat-card-subtitle>
+        </div>
+        <!-- Botón regresar -->
+        <div class="actions-row">
+          <button mat-icon-button class="back-btn" (click)="goBack()">
+            <mat-icon class="back-icon">arrow_back</mat-icon>
+          </button>
+        </div>
+      </mat-card-header>
+    </mat-card>
+
+    <!-- Formulario de registro -->
+    <div class="forms-area">
+      <mat-card>
+        <mat-card-content>
+          <form [formGroup]="formMateria" (ngSubmit)="guardarMateria()">
+              <div class="row">
+                <!-- NRC -->
+                <div class="col-md-6 mb-3">
+                  <label for="nrc" class="form-label">NRC <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="nrc" 
+                    formControlName="nrc"
+                    placeholder="Ej: 12345"
+                    maxlength="5"
+                    (input)="onNrcInput($event)"
+                    [class.is-invalid]="errors.nrc"
+                  >
+                  <small class="form-text text-muted">Debe ser un número de 5 dígitos</small>
+                  <div class="invalid-feedback" *ngIf="errors.nrc" [style.display]="'block'">
+                    {{ errors.nrc }}
+                  </div>
+                </div>
+
+                <!-- Nombre de la Materia -->
+                <div class="col-md-6 mb-3">
+                  <label for="nombre" class="form-label">Nombre de la Materia <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="nombre" 
+                    formControlName="nombre"
+                    placeholder="Ej: Sistemas Operativos II"
+                    (input)="onNombreInput($event)"
+                    [class.is-invalid]="errors.nombre"
+                  >
+                  <small class="form-text text-muted">Solo letras y espacios</small>
+                  <div class="invalid-feedback" *ngIf="errors.nombre" [style.display]="'block'">
+                    {{ errors.nombre }}
+                  </div>
+                </div>
+
+                <!-- Sección -->
+                <div class="col-md-6 mb-3">
+                  <label for="seccion" class="form-label">Sección <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="seccion" 
+                    formControlName="seccion"
+                    placeholder="Ej: 001"
+                    maxlength="3"
+                    (input)="onSeccionInput($event)"
+                    [class.is-invalid]="errors.seccion"
+                  >
+                  <small class="form-text text-muted">Máximo 3 dígitos numéricos</small>
+                  <div class="invalid-feedback" *ngIf="errors.seccion" [style.display]="'block'">
+                    {{ errors.seccion }}
+                  </div>
+                </div>
+
+                <!-- Días (Checkboxes) -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Días <span class="text-danger">*</span></label>
+                  <div class="dias-wrapper">
+                    <div class="form-check" *ngFor="let dia of diasSemana">
+                      <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        [value]="dia" 
+                        [id]="'dia-' + dia"
+                        [checked]="diasSeleccionados.includes(dia)"
+                        (change)="onDiaChange($event)"
+                      >
+                      <label class="form-check-label" [for]="'dia-' + dia">
+                        {{ dia }}
+                      </label>
+                    </div>
+                  </div>
+                  <div class="text-danger small" *ngIf="errors.dias" [style.display]="'block'">
+                    {{ errors.dias }}
+                  </div>
+                </div>
+
+                <!-- Hora Inicio -->
+                <div class="col-md-6 mb-3">
+                  <label for="hora_inicio" class="form-label">Hora Inicio <span class="text-danger">*</span></label>
+                  <input 
+                    type="time" 
+                    class="form-control" 
+                    id="hora_inicio" 
+                    formControlName="hora_inicio"
+                    [class.is-invalid]="errors.hora_inicio"
+                  >
+                  <div class="invalid-feedback" *ngIf="errors.hora_inicio" [style.display]="'block'">
+                    {{ errors.hora_inicio }}
+                  </div>
+                </div>
+
+                <!-- Hora Fin -->
+                <div class="col-md-6 mb-3">
+                  <label for="hora_fin" class="form-label">Hora Fin <span class="text-danger">*</span></label>
+                  <input 
+                    type="time" 
+                    class="form-control" 
+                    id="hora_fin" 
+                    formControlName="hora_fin"
+                    [class.is-invalid]="errors.hora_fin"
+                  >
+                  <small class="form-text text-muted">Debe ser mayor que la hora de inicio</small>
+                  <div class="invalid-feedback" *ngIf="errors.hora_fin" [style.display]="'block'">
+                    {{ errors.hora_fin }}
+                  </div>
+                </div>
+
+                <!-- Salón -->
+                <div class="col-md-6 mb-3">
+                  <label for="salon" class="form-label">Salón <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="salon" 
+                    formControlName="salon"
+                    placeholder="Ej: A101"
+                    maxlength="15"
+                    (input)="onSalonInput($event)"
+                    [class.is-invalid]="errors.salon"
+                  >
+                  <small class="form-text text-muted">Alfanumérico, máximo 15 caracteres</small>
+                  <div class="invalid-feedback" *ngIf="errors.salon" [style.display]="'block'">
+                    {{ errors.salon }}
+                  </div>
+                </div>
+
+                <!-- Programa Educativo -->
+                <div class="col-md-6 mb-3">
+                  <label for="programa_educativo" class="form-label">Programa Educativo <span class="text-danger">*</span></label>
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-select 
+                      formControlName="programa_educativo"
+                      placeholder="Seleccione un programa educativo"
+                    >
+                      <mat-option *ngFor="let programa of programasEducativos" [value]="programa">
+                        {{ programa }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <div class="text-danger small" *ngIf="errors.programa_educativo" [style.display]="'block'">
+                    {{ errors.programa_educativo }}
+                  </div>
+                </div>
+
+                <!-- Profesor Asignado -->
+                <div class="col-md-6 mb-3">
+                  <label for="profesor_id" class="form-label">Profesor Asignado <span class="text-danger">*</span></label>
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-select 
+                      formControlName="profesor_id"
+                      placeholder="Seleccione un profesor"
+                    >
+                      <mat-option *ngFor="let maestro of maestros" [value]="maestro.id">
+                        {{ maestro.user.first_name }} {{ maestro.user.last_name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <div class="text-danger small" *ngIf="errors.profesor_id" [style.display]="'block'">
+                    {{ errors.profesor_id }}
+                  </div>
+                </div>
+
+                <!-- Créditos -->
+                <div class="col-md-6 mb-3">
+                  <label for="creditos" class="form-label">Créditos <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="creditos" 
+                    formControlName="creditos"
+                    placeholder="Ej: 8"
+                    maxlength="2"
+                    (input)="onCreditosInput($event)"
+                    [class.is-invalid]="errors.creditos"
+                  >
+                  <small class="form-text text-muted">Solo números positivos, máximo 2 dígitos</small>
+                  <div class="invalid-feedback" *ngIf="errors.creditos" [style.display]="'block'">
+                    {{ errors.creditos }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-save"></i> {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="regresar()">
+                  <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+    </div>
+  </div>
+</div>

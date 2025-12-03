@@ -1,0 +1,154 @@
+<div class="wrapper main-content-alumnos">
+  <div class="header-home-alumnos">
+  </div>
+  <div class="body-alumnos">
+    <!-- Datos iniciales de la vista de alumnos -->
+    <div class="row mt-5 mb-5">
+      <div class="col-12">
+        <span class="title-perfil">Bienvenido {{name_user}}</span>
+        <br>
+        <span class="title-perfil">Alumnos</span>
+      </div>
+    </div>
+    <!-- Comienza el contenido de alumnos -->
+    <div class="container">
+      <!-- Título de la tabla de alumnos -->
+      <div class="row mt-3 mb-3" style="text-align: center;">
+        <div class="col-12">
+          <div class="alert alert-primary" role="alert">
+            <span class="title-table">Lista de alumnos registrados</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buscador -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text" id="search-addon">
+              <i class="bi bi-search"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Buscar por ID, Nombre, Email, Matrícula o CURP..."
+              [(ngModel)]="searchTerm"
+              (input)="buscar()"
+              aria-label="Buscar"
+              aria-describedby="search-addon"
+            >
+            <button 
+              class="btn btn-outline-secondary" 
+              type="button"
+              *ngIf="searchTerm"
+              (click)="searchTerm=''; buscar()">
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de alumnos -->
+      <ng-container *ngIf="lista_alumnos_filtrados.length > 0; else noData">
+        <!-- Si la tabla contiene registros se muestran todos los datos -->
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" class="sortable" (click)="ordenar('id')">
+                  ID <i class="bi" [ngClass]="getSortIcon('id')"></i>
+                </th>
+                <th scope="col" class="sortable" (click)="ordenar('matricula')">
+                  Matrícula <i class="bi" [ngClass]="getSortIcon('matricula')"></i>
+                </th>
+                <th scope="col" class="sortable" (click)="ordenar('nombre')">
+                  Nombre Completo <i class="bi" [ngClass]="getSortIcon('nombre')"></i>
+                </th>
+                <th scope="col">Email</th>
+                <th scope="col">CURP</th>
+                <th scope="col">Teléfono</th>
+                <th scope="col">Edad</th>
+                <th scope="col">Ocupación</th>
+                <th scope="col" *ngIf="isAdmin || isMaestro">Editar</th>
+                <th scope="col" *ngIf="isAdmin || isMaestro">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let alumno of paginatedData; let i=index">
+                <td>{{alumno.id}}</td>
+                <td>{{alumno.matricula}}</td>
+                <td>{{alumno.user.first_name}} {{alumno.user.last_name}}</td>
+                <td>{{alumno.user.email}}</td>
+                <td>{{alumno.curp}}</td>
+                <td>{{alumno.telefono}}</td>
+                <td>{{alumno.edad}}</td>
+                <td>{{alumno.ocupacion}}</td>
+                <td class="td-editar" *ngIf="isAdmin || isMaestro"><i class="bi bi-pencil-square" (click)="goEditar(alumno.id)"></i></td>
+                <td class="td-eliminar" *ngIf="isAdmin || isMaestro"><i class="bi bi-trash3-fill" (click)="delete(alumno.id)"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="row mt-3 mb-3">
+          <div class="col-12">
+            <nav aria-label="Paginación de alumnos">
+              <ul class="pagination justify-content-center mb-0">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="goToPage(1)" tabindex="-1">
+                    <i class="bi bi-chevron-double-left"></i>
+                  </a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="previousPage()" tabindex="-1">
+                    <i class="bi bi-chevron-left"></i>
+                  </a>
+                </li>
+                <li class="page-item" 
+                    *ngFor="let page of getPageNumbers()"
+                    [class.active]="currentPage === page">
+                  <a class="page-link" (click)="goToPage(page)">{{page}}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="nextPage()">
+                    <i class="bi bi-chevron-right"></i>
+                  </a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="goToPage(totalPages)">
+                    <i class="bi bi-chevron-double-right"></i>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-12 text-center">
+            <small class="text-muted">
+              Mostrando {{((currentPage - 1) * itemsPerPage) + 1}} - 
+              {{Math.min(currentPage * itemsPerPage, lista_alumnos_filtrados.length)}} 
+              de {{lista_alumnos_filtrados.length}} registros
+            </small>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #noData>
+        <div class="row">
+          <div class="col-12">
+            <div class="alert alert-warning" role="alert">
+              <ng-container *ngIf="searchTerm; else noRegistros">
+                No se encontraron alumnos que coincidan con "{{searchTerm}}".
+              </ng-container>
+              <ng-template #noRegistros>
+                No hay alumnos registrados.
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

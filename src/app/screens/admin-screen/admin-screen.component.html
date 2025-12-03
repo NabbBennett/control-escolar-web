@@ -1,0 +1,158 @@
+<div class="wrapper main-content-admin">
+  <div class="header-home-admin">
+  </div>
+  <div class="body-admin">
+    <!-- Datos iniciales de la vista de administrador -->
+    <div class="row mt-5 mb-5">
+      <div class="col-12">
+        <span class="title-perfil">Bienvenido {{name_user}}</span>
+        <br>
+        <span class="title-perfil">Administrador</span>
+      </div>
+    </div>
+    <!-- Comienza el contenido de administrador -->
+    <div class="container">
+      <!-- Título de la tabla de administradores -->
+      <div class="row mt-3 mb-3" style="text-align: center;">
+        <div class="col-12">
+          <div class="alert alert-primary" role="alert">
+            <span class="title-table">Lista de administradores registrados</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buscador -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text" id="search-addon">
+              <i class="bi bi-search"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Buscar por ID, Nombre, Email o RFC..."
+              [(ngModel)]="searchTerm"
+              (input)="buscar()"
+              aria-label="Buscar"
+              aria-describedby="search-addon"
+            >
+            <button 
+              class="btn btn-outline-secondary" 
+              type="button"
+              *ngIf="searchTerm"
+              (click)="searchTerm=''; buscar()">
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de administradores -->
+      <ng-container *ngIf="lista_admins_filtrados.length > 0; else noData">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" class="sortable" (click)="ordenar('id')">
+                  ID <i class="bi" [ngClass]="getSortIcon('id')"></i>
+                </th>
+                <th scope="col">Clave Admin</th>
+                <th scope="col" class="sortable" (click)="ordenar('nombre')">
+                  Nombre Completo <i class="bi" [ngClass]="getSortIcon('nombre')"></i>
+                </th>
+                <th scope="col">Email</th>
+                <th scope="col">RFC</th>
+                <th scope="col">Ocupación</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let admin of paginatedData; let i=index">
+                <td>{{admin.id}}</td>
+                <td>{{admin.clave_admin}}</td>
+                <td>{{admin.user.first_name}} {{admin.user.last_name}}</td>
+                <td>{{admin.user.email}}</td>
+                <td>{{admin.rfc}}</td>
+                <td>{{admin.ocupacion}}</td>
+                <td class="td-editar"><i class="bi bi-pencil-square" (click)="goEditar(admin.id)"></i></td>
+                <td class="td-eliminar"><i class="bi bi-trash3-fill" (click)="delete(admin.id)"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="row mt-3 mb-3">
+          <div class="col-12">
+            <nav aria-label="Paginación de administradores">
+              <ul class="pagination justify-content-center mb-0">
+                <!-- Botón Primera Página -->
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="goToPage(1)" tabindex="-1">
+                    <i class="bi bi-chevron-double-left"></i>
+                  </a>
+                </li>
+                
+                <!-- Botón Anterior -->
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="previousPage()" tabindex="-1">
+                    <i class="bi bi-chevron-left"></i>
+                  </a>
+                </li>
+                
+                <!-- Números de página -->
+                <li class="page-item" 
+                    *ngFor="let page of getPageNumbers()"
+                    [class.active]="currentPage === page">
+                  <a class="page-link" (click)="goToPage(page)">{{page}}</a>
+                </li>
+                
+                <!-- Botón Siguiente -->
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="nextPage()">
+                    <i class="bi bi-chevron-right"></i>
+                  </a>
+                </li>
+                
+                <!-- Botón Última Página -->
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="goToPage(totalPages)">
+                    <i class="bi bi-chevron-double-right"></i>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        
+        <!-- Información de paginación -->
+        <div class="row">
+          <div class="col-12 text-center">
+            <small class="text-muted">
+              Mostrando {{((currentPage - 1) * itemsPerPage) + 1}} - 
+              {{Math.min(currentPage * itemsPerPage, lista_admins_filtrados.length)}} 
+              de {{lista_admins_filtrados.length}} registros
+            </small>
+          </div>
+        </div>
+      </ng-container>
+      <!-- Si no hay datos -->
+      <ng-template #noData>
+        <div class="row">
+          <div class="col-12">
+            <div class="alert alert-warning" role="alert">
+              <ng-container *ngIf="searchTerm; else noRegistros">
+                No se encontraron administradores que coincidan con "{{searchTerm}}".
+              </ng-container>
+              <ng-template #noRegistros>
+                No hay administradores registrados.
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,155 @@
+<div class="wrapper main-content-maestros">
+  <div class="header-home-maestros">
+  </div>
+  <div class="body-maestros">
+    <div class="row mt-5 mb-5">
+      <div class="col-12">
+        <span class="title-perfil">Bienvenido {{name_user}}</span>
+        <br>
+        <span class="title-perfil">Maestros</span>
+      </div>
+    </div>
+    <!-- Tabla de maestros -->
+    <div class="container">
+      <div class="row mt-3 mb-3" style="text-align: center;">
+        <div class="col-12">
+          <div class="alert alert-primary" role="alert">
+            <span class="title-table">Lista de maestros registrados</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buscador -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text" id="search-addon">
+              <i class="bi bi-search"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Buscar por ID, Nombre, Email, ID Trabajador o RFC..."
+              [(ngModel)]="searchTerm"
+              (input)="buscar()"
+              aria-label="Buscar"
+              aria-describedby="search-addon"
+            >
+            <button 
+              class="btn btn-outline-secondary" 
+              type="button"
+              *ngIf="searchTerm"
+              (click)="searchTerm=''; buscar()">
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de maestros -->
+      <ng-container *ngIf="lista_maestros_filtrados.length > 0; else noData">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col" class="sortable" (click)="ordenar('id')">
+                  ID <i class="bi" [ngClass]="getSortIcon('id')"></i>
+                </th>
+                <th scope="col" class="sortable" (click)="ordenar('id_trabajador')">
+                  ID Trabajador <i class="bi" [ngClass]="getSortIcon('id_trabajador')"></i>
+                </th>
+                <th scope="col" class="sortable" (click)="ordenar('nombre')">
+                  Nombre Completo <i class="bi" [ngClass]="getSortIcon('nombre')"></i>
+                </th>
+                <th scope="col">Email</th>
+                <th scope="col">Fecha Nacimiento</th>
+                <th scope="col">Teléfono</th>
+                <th scope="col">RFC</th>
+                <th scope="col">Cubículo</th>
+                <th scope="col">Área Investigación</th>
+                <th scope="col" *ngIf="isAdmin">Editar</th>
+                <th scope="col" *ngIf="isAdmin">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let maestro of paginatedData; let i=index">
+                <td>{{maestro.id}}</td>
+                <td>{{maestro.id_trabajador}}</td>
+                <td>{{maestro.user.first_name}} {{maestro.user.last_name}}</td>
+                <td>{{maestro.user.email}}</td>
+                <td>{{maestro.fecha_nacimiento | date: 'dd/MM/yyyy'}}</td>
+                <td>{{maestro.telefono}}</td>
+                <td>{{maestro.rfc}}</td>
+                <td>{{maestro.cubiculo}}</td>
+                <td>{{maestro.area_investigacion}}</td>
+                <td class="td-editar" *ngIf="isAdmin"><i class="bi bi-pencil-square" (click)="goEditar(maestro.id)"></i></td>
+                <td class="td-eliminar" *ngIf="isAdmin"><i class="bi bi-trash3-fill" (click)="delete(maestro.id)"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="row mt-3 mb-3">
+          <div class="col-12">
+            <nav aria-label="Paginación de maestros">
+              <ul class="pagination justify-content-center mb-0">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="goToPage(1)" tabindex="-1">
+                    <i class="bi bi-chevron-double-left"></i>
+                  </a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="previousPage()" tabindex="-1">
+                    <i class="bi bi-chevron-left"></i>
+                  </a>
+                </li>
+                <li class="page-item" 
+                    *ngFor="let page of getPageNumbers()"
+                    [class.active]="currentPage === page">
+                  <a class="page-link" (click)="goToPage(page)">{{page}}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="nextPage()">
+                    <i class="bi bi-chevron-right"></i>
+                  </a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="goToPage(totalPages)">
+                    <i class="bi bi-chevron-double-right"></i>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-12 text-center">
+            <small class="text-muted">
+              Mostrando {{((currentPage - 1) * itemsPerPage) + 1}} - 
+              {{Math.min(currentPage * itemsPerPage, lista_maestros_filtrados.length)}} 
+              de {{lista_maestros_filtrados.length}} registros
+            </small>
+          </div>
+        </div>
+      </ng-container>
+      
+      <!-- Si no hay datos -->
+      <ng-template #noData>
+        <div class="row">
+          <div class="col-12">
+            <div class="alert alert-warning" role="alert">
+              <ng-container *ngIf="searchTerm; else noRegistros">
+                No se encontraron maestros que coincidan con "{{searchTerm}}".
+              </ng-container>
+              <ng-template #noRegistros>
+                No hay maestros registrados.
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
