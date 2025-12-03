@@ -115,7 +115,7 @@ export class AdministradoresService {
     } else {
       headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     }
-    return this.http.post<any>(`${environment.url_api}/admin/`, data, { headers });
+    return this.http.post<any>(`${environment.url_api}/api/admins/create/`, data, { headers });
   }
 
   // Petición para obtener la lista de administradores
@@ -129,7 +129,7 @@ export class AdministradoresService {
       console.log("No se encontró el token del usuario");
 
     }
-    return this.http.get<any>(`${environment.url_api}/lista-admins/`, { headers });
+    return this.http.get<any>(`${environment.url_api}/api/admins/list/`, { headers });
   }
 
   // Petición para obtener un administrador por su ID
@@ -142,7 +142,7 @@ export class AdministradoresService {
       headers = new HttpHeaders({ 'Content-Type': 'application/json' });
       console.log("No se encontró el token del usuario");
     }
-    return this.http.get<any>(`${environment.url_api}/admin/?id=${idAdmin}`, { headers });
+    return this.http.get<any>(`${environment.url_api}/api/admins/detail/?id=${idAdmin}`, { headers });
   }
 
   // Petición para actualizar un administrador
@@ -155,7 +155,7 @@ export class AdministradoresService {
       headers = new HttpHeaders({ 'Content-Type': 'application/json' });
       console.log("No se encontró el token del usuario");
     }
-    return this.http.put<any>(`${environment.url_api}/admin/`, data, { headers });
+    return this.http.put<any>(`${environment.url_api}/api/admins/update/`, data, { headers });
   }
 
   // Petición para eliminar un administrador
@@ -168,7 +168,7 @@ export class AdministradoresService {
       headers = new HttpHeaders({ 'Content-Type': 'application/json' });
       console.log("No se encontró el token del usuario");
     }
-    return this.http.delete<any>(`${environment.url_api}/admin/?id=${idAdmin}`, { headers });
+    return this.http.delete<any>(`${environment.url_api}/api/admins/delete/?id=${idAdmin}`, { headers });
   }
 
   // Servicio para obtener el total de usuarios registrados por rol
