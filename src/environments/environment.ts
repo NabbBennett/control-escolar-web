@@ -4,5 +4,5 @@
 
 export const environment = {
   production: false,
-  API_URL: 'https://nabb.pythonanywhere.com',
+  url_api: 'https://nabb.pythonanywhere.com',
 };
