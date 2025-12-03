@@ -261,17 +261,12 @@ Las cookies almacenadas incluyen:
 ```powershell
 npm start          # Inicia servidor de desarrollo
 npm run build      # Construye para producción
-npm test           # Ejecuta tests
-npm run watch      # Build en modo watch
 ```
 
 ### Backend
 ```powershell
 python manage.py runserver        # Inicia servidor
 python manage.py migrate          # Ejecuta migraciones
-python manage.py makemigrations   # Crea nuevas migraciones
-python manage.py createsuperuser  # Crea admin
-python manage.py test             # Ejecuta tests
 ```
 
 ## Configuración CORS
