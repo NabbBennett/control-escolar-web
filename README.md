@@ -13,7 +13,7 @@ Sistema web full-stack que permite la gestión completa de:
 
 ## Arquitectura del Proyecto
 
-### Frontend - Angular 16
+### Frontend - Angular
 ```
 src/
 ├── app/
@@ -38,7 +38,7 @@ src/
 └── environments/         # Configuración de entornos
 ```
 
-### Backend - Django REST Framework
+### Backend - Django 
 ```
 control_escolar_back/
 ├── control_escolar_desit_api/
@@ -55,26 +55,6 @@ control_escolar_back/
 │   └── migrations/       # Migraciones de base de datos
 └── requirements.txt      # Dependencias Python
 ```
-
-## Tecnologías Utilizadas
-
-### Frontend
-- **Angular 16.2.0** - Framework principal
-- **Angular Material 16.2.14** - Componentes UI
-- **Bootstrap 5.3.8** - Framework CSS
-- **ng2-charts** - Gráficas con Chart.js
-- **ngx-mask** - Máscaras de entrada
-- **ngx-cookie-service** - Gestión de cookies
-- **RxJS** - Programación reactiva
-
-### Backend
-- **Django 5.0.2** - Framework web
-- **Django REST Framework 3.16.1** - API REST
-- **PyMySQL** - Conector MySQL
-- **django-cors-headers 4.7.0** - CORS
-- **django-filter** - Filtrado avanzado
-- **Cryptography 42.0.8** - Seguridad
-- **Pillow 10.4.0** - Manejo de imágenes
 
 ### Base de Datos
 - **MySQL** - Base de datos relacional
