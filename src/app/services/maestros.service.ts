@@ -111,7 +111,6 @@ export class MaestrosService {
   //Aquí van los servicios HTTP
   //Servicio para registrar un nuevo usuario
   public registrarMaestro (data: any): Observable <any>{
-    // Verificamos si existe el token de sesión
     const token = this.facadeService.getSessionToken();
     let headers: HttpHeaders;
     if (token) {
@@ -124,7 +123,6 @@ export class MaestrosService {
 
   //Servicio para obtener la lista de maestros
   public obtenerListaMaestros(): Observable<any>{
-    // Verificamos si existe el token de sesión
     const token = this.facadeService.getSessionToken();
     let headers: HttpHeaders;
     if (token) {

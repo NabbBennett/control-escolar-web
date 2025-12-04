@@ -139,7 +139,7 @@ export class AlumnosService {
       if (token) {
         headers = new HttpHeaders({ 
           'Content-Type': 'application/json', 
-          'Authorization': 'Bearer ' + token  // ← Esto es OPCIONAL
+          'Authorization': 'Bearer ' + token 
         });
       } else {
         headers = new HttpHeaders({ 'Content-Type': 'application/json' });
