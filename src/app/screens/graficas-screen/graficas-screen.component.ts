@@ -124,13 +124,13 @@ export class GraficasScreenComponent implements OnInit{
     );
   }
 
-  // Función para obtener materias registradas (para el histograma)
+  // Función para obtener materias registradas 
   public obtenerMateriasRegistradas(): void {
     this.materiasService.obtenerMateriasRegistradasPorDia().subscribe(
       (response) => {
         console.log('Materias registradas por día desde BD:', response);
         
-        // Actualizar el histograma con los datos reales (crear nuevo objeto)
+        // Actualizar el histograma con los datos reales 
         this.lineChartData = {
           labels: response.labels || [],
           datasets: [
